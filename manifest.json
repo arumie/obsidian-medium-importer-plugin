@@ -1,0 +1,10 @@
+{
+	"id": "medium-importer",
+	"name": "Medium Importer",
+	"version": "0.1.0",
+	"minAppVersion": "0.15.0",
+	"description": "Import Medium posts into your vault",
+	"author": "arumie",
+	"authorUrl": "https://github.com/arumie",
+	"isDesktopOnly": false
+}

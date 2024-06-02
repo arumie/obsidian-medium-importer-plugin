@@ -1,0 +1,65 @@
+/* --- Medium Importer classes --- */
+.mi-subtitle {
+    opacity: 0.5;
+}
+
+.mi-input {
+    width: 100%;
+}
+
+.mi-submit {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* --- Loading --- */
+/* Original code from: https://github.com/maxbeier/text-spinners/blob/master/spinners.css*/
+
+.loading-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.loading {
+    display: inline-block;
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: -0.3em;
+    line-height: 1.5em;
+    vertical-align: text-bottom;
+}
+
+.loading::after {
+    display: inline-table;
+    white-space: pre;
+    text-align: left;
+}
+
+/* --- Types --- */
+
+/* default loading is ellip */
+.loading::after {
+    content: "\A.\A..\A...";
+    animation: spin4 2s steps(4) infinite;
+}
+
+.loading.dots::after {
+    content: "⠋\A⠙\A⠹\A⠸\A⠼\A⠴\A⠦\A⠧\A⠇\A⠏";
+    animation: spin10 1s steps(10) infinite;
+}
+
+/* --- Animations --- */
+
+@keyframes spin4 {
+    to {
+        transform: translateY(-6.0em);
+    }
+}
+
+@keyframes spin10 {
+    to {
+        transform: translateY(-15em);
+    }
+}
