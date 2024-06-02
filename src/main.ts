@@ -1,10 +1,8 @@
 import {
-    Editor,
-    MarkdownView,
     Modal,
     Notice,
     Plugin,
-    normalizePath,
+    normalizePath
 } from "obsidian";
 
 interface MediumImporterSettings {
@@ -54,12 +52,10 @@ class SetApiKeyModal extends Modal {
 
 class ImportMediumArticleModal extends Modal {
     plugin: MediumImporterPlugin;
-    editor: Editor;
 
-    constructor(plugin: MediumImporterPlugin, editor: Editor) {
+    constructor(plugin: MediumImporterPlugin) {
         super(plugin.app);
         this.plugin = plugin;
-        this.editor = editor;
     }
 
     async createNewNote(title: string, content: string) {
@@ -76,7 +72,6 @@ class ImportMediumArticleModal extends Modal {
             .replace(/:/g, " -")
             .replace(/\|/g, "")
             .replace(/\?/g, "");
-        console.log("Filename: ", fileName.replace);
         new Notice(`Creating note with title: ${fileName}`);
         try {
             const file = await vault.create(
@@ -143,7 +138,7 @@ class ImportMediumArticleModal extends Modal {
             contentEl.empty();
             contentEl
                 .createDiv({ cls: "loading-wrapper" })
-                .createSpan({ cls: "loading dots" });
+                .createSpan({ cls: "loading" });
 
             if (!this.plugin.settings.rapidAPIKey) {
                 new Notice(
@@ -153,7 +148,6 @@ class ImportMediumArticleModal extends Modal {
             }
 
             const id = input.value.split("-").pop();
-
             if (!id) {
                 new Notice(
                     "[Medium Importer] Invalid URL. Please enter a valid Medium article URL."
@@ -172,8 +166,6 @@ class ImportMediumArticleModal extends Modal {
 
             const title = markdown.split("\n")[0].replace("# ", "");
             const content = markdown.split("\n").slice(1).join("\n");
-            console.log("Title: ", title);
-            console.log("Content: ", content);
             await this.createNewNote(title, content);
 
             this.close();
@@ -208,8 +200,8 @@ export default class MediumImporterPlugin extends Plugin {
         this.addCommand({
             id: "import-medium-article",
             name: "Import Medium Article",
-            editorCallback: (editor: Editor, _: MarkdownView) => {
-                new ImportMediumArticleModal(this, editor).open();
+            callback: () => {
+                new ImportMediumArticleModal(this).open();
             },
         });
     }
