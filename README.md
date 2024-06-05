@@ -1,12 +1,10 @@
 # Medium Importer
 
-This is a plugin for Obsidian (https://obsidian.md).
-
 ## What is Medium Importer?
 
-Medium Importer is a plugin for Obsidian that allows you to import your Medium articles into your Obsidian vault. The plugin uses the [Unofficial Medium API](https://mediumapi.com/) to fetch the articles and saves them as markdown files in your vault.
+Medium Importer allows you to import your Medium articles into your Obsidian vault. It uses the [Unofficial Medium API](https://mediumapi.com/) to fetch the articles and saves them as markdown files in your vault.
 
-**Note**: The plugin saves the API key in the Obsidian vault settings. Make sure to keep your API key safe. 
+**Note**: The API key for RapidAPI is saved in the Obsidian vault settings. Make sure to keep your API key safe. 
 - If using Git plugin. Add .gitignore with `.obsidian/plugins/medium-importer/data.json` to the vault to avoid pushing the RapidAPI API key to your repository.
 
 ## How to use
