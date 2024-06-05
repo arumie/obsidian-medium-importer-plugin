@@ -1,9 +1,4 @@
-import {
-    Modal,
-    Notice,
-    Plugin,
-    normalizePath
-} from "obsidian";
+import { Modal, Notice, Plugin, normalizePath } from "obsidian";
 
 interface MediumImporterSettings {
     rapidAPIKey?: string;
@@ -76,7 +71,7 @@ class ImportMediumArticleModal extends Modal {
         try {
             const file = await vault.create(
                 normalizePath(`${fileName}.md`),
-                content
+                content,
             );
             const leaf = workspace.getLeaf(true);
             await leaf.openFile(file);
@@ -87,7 +82,7 @@ class ImportMediumArticleModal extends Modal {
 
     async getArticleMarkdownFromId(
         id: string,
-        apiKey: string
+        apiKey: string,
     ): Promise<string | undefined> {
         const url = `https://medium2.p.rapidapi.com/article/${id}/markdown`;
         const options = {
@@ -142,7 +137,7 @@ class ImportMediumArticleModal extends Modal {
 
             if (!this.plugin.settings.rapidAPIKey) {
                 new Notice(
-                    "[Medium Importer] Please enter your API key with the command 'Set API key'"
+                    "[Medium Importer] Please enter your API key with the command 'Set API key'",
                 );
                 return;
             }
@@ -150,14 +145,14 @@ class ImportMediumArticleModal extends Modal {
             const id = input.value.split("-").pop();
             if (!id) {
                 new Notice(
-                    "[Medium Importer] Invalid URL. Please enter a valid Medium article URL."
+                    "[Medium Importer] Invalid URL. Please enter a valid Medium article URL.",
                 );
                 return;
             }
 
             const markdown = await this.getArticleMarkdownFromId(
                 id,
-                this.plugin.settings.rapidAPIKey
+                this.plugin.settings.rapidAPIKey,
             );
 
             if (!markdown) {
@@ -185,7 +180,7 @@ export default class MediumImporterPlugin extends Plugin {
         await this.loadSettings();
         if (!this.settings.rapidAPIKey) {
             new Notice(
-                "[Medium Importer] Please enter your API key with the command 'Set API key'"
+                "[Medium Importer] Please enter your API key with the command 'Set API key'",
             );
         }
 
