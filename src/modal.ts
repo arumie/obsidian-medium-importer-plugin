@@ -1,4 +1,4 @@
-import { Modal, Notice, normalizePath } from "obsidian";
+import { Modal, Notice, normalizePath, request } from "obsidian";
 import MediumImporterPlugin from "./main";
 
 export default class ImportMediumArticleModal extends Modal {
@@ -41,23 +41,17 @@ export default class ImportMediumArticleModal extends Modal {
         apiKey: string,
     ): Promise<string | undefined> {
         const url = `https://medium2.p.rapidapi.com/article/${id}/markdown`;
-        const options = {
+
+        const result = await request({
+            url,
             method: "GET",
             headers: {
                 "x-rapidapi-key": apiKey,
                 "x-rapidapi-host": "medium2.p.rapidapi.com",
             },
-        };
-
-        try {
-            const response = await fetch(url, options);
-            const result = await response.text();
-            const markdown = JSON.parse(result).markdown;
-            return markdown;
-        } catch (error) {
-            new Notice(`[Medium Importer] Error: ${error}`);
-            return undefined;
-        }
+        });
+        const markdown = JSON.parse(result).markdown;
+        return markdown;
     }
 
     onOpen() {
@@ -85,39 +79,42 @@ export default class ImportMediumArticleModal extends Modal {
         });
 
         button.addEventListener("click", async () => {
-            new Notice("Importing article...");
-            contentEl.empty();
-            contentEl
-                .createDiv({ cls: "loading-wrapper" })
-                .createSpan({ cls: "loading" });
+            try {
+                contentEl.empty();
+                contentEl
+                    .createDiv({ cls: "loading-wrapper" })
+                    .createSpan({ cls: "loading" });
 
-            if (!this.plugin.settings.rapidAPIKey) {
-                new Notice(
-                    "[Medium Importer] Please enter your API key with the command 'Set API key'",
+                if (!this.plugin.settings.rapidAPIKey) {
+                    new Notice(
+                        "[Medium Importer] Please enter your API key with the command 'Set API key'",
+                    );
+                    return;
+                }
+
+                const id = input.value.split("-").pop();
+                if (!id) {
+                    new Notice(
+                        "[Medium Importer] Invalid URL. Please enter a valid Medium article URL.",
+                    );
+                    return;
+                }
+
+                const markdown = await this.getArticleMarkdownFromId(
+                    id,
+                    this.plugin.settings.rapidAPIKey,
                 );
-                return;
+                console.log(markdown);
+                if (!markdown) {
+                    return;
+                }
+
+                const title = markdown.split("#")[1].split("\n")[0];
+                const content = markdown;
+                await this.createNewNote(title, content);
+            } catch (error) {
+                new Notice(`[Medium Importer] Unexpected Error: ${error}`);
             }
-
-            const id = input.value.split("-").pop();
-            if (!id) {
-                new Notice(
-                    "[Medium Importer] Invalid URL. Please enter a valid Medium article URL.",
-                );
-                return;
-            }
-
-            const markdown = await this.getArticleMarkdownFromId(
-                id,
-                this.plugin.settings.rapidAPIKey,
-            );
-
-            if (!markdown) {
-                return;
-            }
-
-            const title = markdown.split("\n")[0].replace("# ", "");
-            const content = markdown.split("\n").slice(1).join("\n");
-            await this.createNewNote(title, content);
 
             this.close();
         });
