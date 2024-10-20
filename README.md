@@ -14,6 +14,13 @@ Medium Importer allows you to import your Medium articles into your Obsidian vau
     - A free plan is available at the time of writing with 150 free requests per month.
 - Copy the URL of the Medium article you want to import.
 - Use the "Import Medium Article" command to import the article.
+- Article will be saved as a markdown file in the folder you specify ("Medium" is the default folder).
+
+### Commands
+
+- **Import Medium Article**: Import a Medium article using the URL.
+- **Add Medium Author**: Add Medium author and their articles to the vault.
+- **Sync Medium Author**: Add new articles from previously added Medium authors and their articles to the vault.
 
 ## Demo
 
@@ -23,7 +30,7 @@ Medium Importer allows you to import your Medium articles into your Obsidian vau
 
 - Clone this repo into your Obsidian vault's plugins folder.
 - `npm i` to install dependencies.
-- `npm run build` to start compilation in watch mode.
+- `npm run dev` to start compilation in watch mode.
 - `npm run build:css` to build the css
 - Reload Obsidian.
 
