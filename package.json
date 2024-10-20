@@ -1,6 +1,6 @@
 {
     "name": "obsidian-medium-importer-plugin",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "description": "This is a plugin for Obsidian that allows you to import Medium posts into your vault.",
     "main": "main.js",
     "lint-staged": {
