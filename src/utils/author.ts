@@ -1,5 +1,7 @@
 import { Notice } from "obsidian";
 import {
+    articleInfoToProperties,
+    getArticleInfo,
     getArticleMarkdownFromId,
     getAuthorInfo,
     getUserArticles,
@@ -109,14 +111,25 @@ async function importMediumArticles(
     }
 
     for (const articleId of articlesToImport) {
-        const markdown = await getArticleMarkdownFromId(articleId, rapidAPIKey);
-        if (!markdown) {
-            continue;
-        }
+        try {
+            const markdown = await getArticleMarkdownFromId(
+                articleId,
+                rapidAPIKey,
+            );
+            const articleInfo = await getArticleInfo(articleId, rapidAPIKey);
+            if (!markdown) {
+                continue;
+            }
 
-        const title = markdown.split("#")[1].split("\n")[0];
-        const content = markdown;
-        await createNewNote(plugin, title, content, authorInfo.fullname);
+            const title = articleInfo.title;
+            const properties = articleInfoToProperties(articleInfo);
+            const content = `${properties}\n${markdown}`;
+            await createNewNote(plugin, title, content, authorInfo.fullname);
+        } catch (error) {
+            new Notice(
+                `[Medium Importer] Unexpected Error importing article with id: ${articleId}`,
+            );
+        }
     }
 
     new Notice(

@@ -1,7 +1,11 @@
 import { Modal, Notice } from "obsidian";
 import MediumImporterPlugin from "../main";
 import { createNewNote } from "../utils/vault";
-import { getArticleMarkdownFromId } from "../utils/medium";
+import {
+    articleInfoToProperties,
+    getArticleInfo,
+    getArticleMarkdownFromId,
+} from "../utils/medium";
 import { initTextInputModal } from "src/utils/modal";
 
 export default class ImportMediumArticleModal extends Modal {
@@ -49,13 +53,19 @@ export default class ImportMediumArticleModal extends Modal {
                     id,
                     this.plugin.settings.rapidAPIKey,
                 );
+                const articleInfo = await getArticleInfo(
+                    id,
+                    this.plugin.settings.rapidAPIKey,
+                );
+
                 console.log(markdown);
                 if (!markdown) {
                     return;
                 }
 
-                const title = markdown.split("#")[1].split("\n")[0];
-                const content = markdown;
+                const title = articleInfo.title;
+                const properties = articleInfoToProperties(articleInfo);
+                const content = `${properties}\n${markdown}`;
                 await createNewNote(this.plugin, title, content);
             } catch (error) {
                 new Notice(`[Medium Importer] Unexpected Error: ${error}`);
