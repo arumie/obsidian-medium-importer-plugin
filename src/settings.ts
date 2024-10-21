@@ -85,10 +85,12 @@ export default class MediumImporterSettingsTab extends PluginSettingTab {
                     .setName(author.authorInfo.fullname)
                     .setDesc(author.authorInfo.bio)
                     .addToggle((toggle) =>
-                        toggle.setValue(false).onChange(async (value) => {
-                            author.syncOnBoot = value;
-                            await this.plugin.saveSettings();
-                        }),
+                        toggle
+                            .setValue(author.syncOnBoot ?? false)
+                            .onChange(async (value) => {
+                                author.syncOnBoot = value;
+                                await this.plugin.saveSettings();
+                            }),
                     )
                     .addExtraButton((button) =>
                         button

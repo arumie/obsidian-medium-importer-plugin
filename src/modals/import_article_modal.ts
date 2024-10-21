@@ -58,7 +58,6 @@ export default class ImportMediumArticleModal extends Modal {
                     this.plugin.settings.rapidAPIKey,
                 );
 
-                console.log(markdown);
                 if (!markdown) {
                     return;
                 }

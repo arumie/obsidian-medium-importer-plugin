@@ -43,7 +43,7 @@ export const addAuthor = async (
     let author = authors[authorInfo.id];
 
     if (author == null) {
-        author = { articles: [], authorInfo };
+        author = { articles: [], authorInfo, syncOnBoot: false };
         plugin.settings.authors[authorInfo.id] = author;
     }
 
@@ -99,9 +99,8 @@ async function importMediumArticles(
     rapidAPIKey: string,
     plugin: MediumImporterPlugin,
 ) {
-    const alreadyImportedArticles = author.articles;
     const articlesToImport = articles.associated_articles.filter(
-        (articleId) => !alreadyImportedArticles.includes(articleId),
+        (articleId) => !author.articles.includes(articleId),
     );
     if (articlesToImport.length === 0) {
         new Notice(
@@ -122,9 +121,10 @@ async function importMediumArticles(
             }
 
             const title = articleInfo.title;
-            const properties = articleInfoToProperties(articleInfo);
+            const properties = articleInfoToProperties(articleInfo, authorInfo);
             const content = `${properties}\n${markdown}`;
             await createNewNote(plugin, title, content, authorInfo.fullname);
+            author.articles.push(articleId);
         } catch (error) {
             new Notice(
                 `[Medium Importer] Unexpected Error importing article with id: ${articleId}`,
@@ -135,6 +135,5 @@ async function importMediumArticles(
     new Notice(
         `[Medium Importer] Imported ${articlesToImport.length} articles by ${authorInfo.fullname}`,
     );
-    author.articles = author.articles.concat(articlesToImport);
     plugin.settings.authors[authorInfo.id] = author;
 }
