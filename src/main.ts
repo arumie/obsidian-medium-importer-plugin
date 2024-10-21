@@ -6,6 +6,7 @@ import MediumImporterSettingsTab, {
 } from "./settings";
 import AddMediumAuthorModal from "./modals/add_author_modal";
 import SyncMediumAuthorModal from "./modals/sync_author_modal";
+import { syncAuthor } from "./utils/author";
 
 export default class MediumImporterPlugin extends Plugin {
     settings: MediumImporterSettings;
@@ -36,6 +37,12 @@ export default class MediumImporterPlugin extends Plugin {
         });
 
         this.addSettingTab(new MediumImporterSettingsTab(this.app, this));
+        const authors = Object.values(this.settings.authors);
+        for (const author of authors) {
+            if (author.syncOnBoot) {
+                syncAuthor(this, author);
+            }
+        }
     }
 
     onunload() {}

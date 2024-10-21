@@ -12,7 +12,11 @@ export interface MediumImporterSettings {
     rapidAPIKey?: string;
     folder: string;
     authors: {
-        [key: string]: { articles: string[]; authorInfo: MediumAuthorInfo };
+        [key: string]: {
+            articles: string[];
+            authorInfo: MediumAuthorInfo;
+            syncOnBoot?: boolean;
+        };
     };
 }
 
@@ -67,5 +71,39 @@ export default class MediumImporterSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+        const authors = Object.values(this.plugin.settings.authors);
+        console.log(authors);
+        if (authors.length > 0) {
+            new Setting(containerEl)
+                .setHeading()
+                .setName("Authors")
+                .setDesc(
+                    "Choose whether to sync author on startup or delete author.",
+                );
+            for (const author of authors) {
+                new Setting(containerEl)
+                    .setName(author.authorInfo.fullname)
+                    .setDesc(author.authorInfo.bio)
+                    .addToggle((toggle) =>
+                        toggle.setValue(false).onChange(async (value) => {
+                            author.syncOnBoot = value;
+                            await this.plugin.saveSettings();
+                        }),
+                    )
+                    .addExtraButton((button) =>
+                        button
+                            .setIcon("trash")
+                            .setTooltip("Remove author")
+                            .onClick(async () => {
+                                delete this.plugin.settings.authors[
+                                    author.authorInfo.id
+                                ];
+                                await this.plugin.saveSettings();
+                                new Notice("Author removed successfully");
+                                this.display();
+                            }),
+                    );
+            }
+        }
     }
 }

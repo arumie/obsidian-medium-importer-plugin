@@ -78,7 +78,7 @@ export const syncAuthor = async (
     );
 
     new Notice(
-        `[Medium Importer] Found ${articles.count} articles by ${authorInfo.fullname}`,
+        `[Medium Importer] Synchronizing articles by ${authorInfo.fullname}`,
     );
 
     await importMediumArticles(
